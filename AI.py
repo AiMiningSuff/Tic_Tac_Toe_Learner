@@ -1,6 +1,6 @@
 import random
 import os.path
-from functions import generate_next
+from functions import generate_next, show_board
 
 class AI:
     def __init__(self):
@@ -14,12 +14,9 @@ class AI:
         :return:
         """
         
-        self.self_save = True
-        self.is_learning = True
         self.game_boards_current = []
         self.game_boards_memory = dict()    
         self.file_name = "memory.txt"
-        self.previous_state = None
         
         # check if the file exists
         if os.path.isfile(self.file_name):
@@ -56,29 +53,10 @@ class AI:
         index = random.randint(0, len(next_moves_list)-1)
         best_move = next_moves_list[index]
 
-        for next_move in next_moves_list:
-            # if the next move is better, it replaces the best move
-            if self.get_board_value(best_move[1]) < self.get_board_value(next_move[1]):
-                best_move = next_move
-
-        # add the next move that we are going to make to a list of all boards seen so far
-        # the game_boards current.
-        self.game_boards_current.append(best_move[1])
-        self.backtrack(self.get_board_value(best_move[1]))
-        self.previous_state = best_move[1]
+        ##
 
         # return the index of where to play the next move
         return best_move[0]
-
-    def backtrack(self,current_move_value):
-        if self.is_learning:
-            if self.previous_state != None:
-                # the below line of code is key
-                self.game_boards_memory[str(self.previous_state)] +=  0.99*(current_move_value-self.game_boards_memory[str(self.previous_state)])
-            
-            # optimizies training time
-            if self.self_save:
-                self.save()
                 
     def get_board_value(self, board):
         """
@@ -108,102 +86,25 @@ class AI:
         return value
 
     def has_lost(self):
-        self.backtrack(0)
-        self.previous_state = None
-        ##return self.remember_boards(-1)
+        pass
 
     def has_drawn(self):
-        self.backtrack(0.5)
-        self.previous_state = None
-        #return self.remember_boards(-0.5)
+        pass
 
     def has_won(self):
-        self.backtrack(1)
-        self.previous_state = None
-        ##return self.remember_boards(1)
+        pass
     
     def stop_learning(self):
-        self.is_learning = False
-        print("Stopped learning")
+        pass
         
     def start_learning(self):
-        self.is_learning = True
-        print("Started learning")
+        pass
     
     def stop_self_saving(self):
-        self.self_save = False
-        print("Stopped self saving")
+        pass
         
     def start_self_saving(self):
-        self.self_save = True
-        print("Started self saving")
-
-    '''
-    This is now legacy code...
-    
-    def remember_boards(self, multiplier):
-        """
-        Takes all the boards in boards current,
-            multiplies their index by multiplier to get new_value,
-            and if board already exists, it add's value to the value under that board key,
-            if not, then it creates a new key that points to value.
-        :param multiplier:
-        :return: [number of entries added, number of entries changed]
-
-        test that this code works
-        >>> ai = AI()
-        >>> board = [0,1,0,0]
-        >>> 0 <= ai.move(board) <= len(board)
-        True
-        >>> board2 = [0,0,1,0]
-        >>> 0 <= ai.move(board2) <= len(board2)
-        True
-        >>> print(ai.has_won())
-        Learned 2 new boards, And changed how I look at 0 boards
-        <BLANKLINE>
-        >>> s = 0
-        >>> for board in ai.game_boards_memory: s += ai.game_boards_memory[board]
-        >>> s
-        1
-        >>> board3 = [1,0,0,0]
-        >>> 0 <= ai.move(board3) <= len(board3)
-        True
-        >>> board4 = [1,2,0,0]
-        >>> board4_lost = ai.move(board4)
-        >>> print(ai.has_lost())
-        Learned 2 new boards, And changed how I look at 0 boards
-        <BLANKLINE>
-        >>> new_board = ai.move(board4)
-        >>> str(new_board) == str(board4_lost)
-        False
-        """
-        # info data about what the computer is learning
-        changed = 0
-        added = 0
-
-        for board in self.game_boards_current:
-            value = multiplier * self.game_boards_current.index(board)
-
-            # check if that item is in the dictionary.
-            # if it is, add value to it,
-            # if not, create a new key with the board and make it point to value.
-            board_key = str(board)
-            if board_key in self.game_boards_memory:
-                self.game_boards_memory[board_key] += value
-                changed += 1
-            else:
-                self.game_boards_memory[board_key] = value
-                added += 1
-
-        # after the loop,
-        # now clear out the list of boards for the current game
-        self.game_boards_current = []
-        s = "Moves learned: " + str(added) + ", Moves modified: " + str(changed)
-
-        # save stuff that is remembered into a my
-        self.save()
-        return s
-    '''
+        pass
 
     def save(self):
         """
