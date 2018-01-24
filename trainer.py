@@ -21,19 +21,26 @@ def train_main():
     :return: None
     """
     
+    # change the length of training time here
+    # (It is the number of iterations that the trainer trains the AI for)
+    num_iterations = 50
+    
     ai1 = AI()
-    wins_ai1, wins_ai2, draws_all = train_test(100, 100, 10, ai1)
+    wins_ai1, wins_ai2, draws_all = train_test(100, 100, num_iterations, ai1)
     
     # plot a1 wins
     plt.clf()
     plt.plot(wins_ai1, c='r')
     plt.plot(wins_ai2, c='b')
     plt.plot(draws_all, c='g')
+    axis = plt.gca()
+    axis.set_xlabel("Number of Iterations")
+    axis.set_ylabel("Percantage of wins")
     
     # add legends
-    red_patch = mpatches.Patch(color='red', label='AI_1 wins')
-    blue_patch = mpatches.Patch(color='blue', label='AI_2 wins')
-    green_patch = mpatches.Patch(color='green', label='Draws')
+    red_patch = mpatches.Patch(color='red', label='AI wins (%)')
+    blue_patch = mpatches.Patch(color='blue', label='Trainer wins (%)')
+    green_patch = mpatches.Patch(color='green', label='Draws (%)')
     plt.legend(handles=[red_patch, blue_patch, green_patch])
     
     # print average values:

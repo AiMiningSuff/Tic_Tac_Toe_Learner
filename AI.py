@@ -75,7 +75,8 @@ class AI:
             
             #####
             # Your code goes here
-                    
+            
+            
             ####
             
         else:
@@ -106,15 +107,16 @@ class AI:
                 # of the future move.
                 
                 # What you might want to think about...
-                # the value of a board is kept in dictionary self.game_boards_memory[]
+                # the value of a board is kept in dictionary "self.game_boards_memory[]"
                 # the string of the board is used as a key to index that dictionary
-                # "future_move_value" is a numeric value of the future move 
-                # "current_state" is an array that represent the boards current state.
+                # "self.future_move_value" is a numeric value of the future move 
+                # "self.current_state" is an array that represent the boards current state.
                 
                 #####
                 
-                # Your code goes here
+                # Your code goes here, replace pass with your code
                 pass
+            
                 #####
                 
             # optimizies training time
@@ -288,7 +290,7 @@ def generate_next(board):
     #######
     
     # your code goes here
-
+    
     ########
     
 def show_board(board):
