@@ -1,6 +1,5 @@
 import random
 import os.path
-from functions import generate_next, show_board
 
 class AI:
     def __init__(self):
@@ -14,9 +13,21 @@ class AI:
         :return:
         """
         
+        self.self_save = True
+        self.is_learning = True
         self.game_boards_current = []
         self.game_boards_memory = dict()    
         self.file_name = "memory.txt"
+        self.current_state = None
+        
+        self.randomness = 1
+        self.certainty = 1000
+        
+        self.RANDOM = 0
+        self.CERTAIN = 1
+        
+        self.rand_choice_lst = ([self.RANDOM]*self.randomness) + \
+                                                 ([self.CERTAIN]*self.certainty) 
         
         # check if the file exists
         if os.path.isfile(self.file_name):
@@ -48,15 +59,67 @@ class AI:
         # generate all possible next moves
         next_moves_list = generate_next(board)
 
-        # figure out the best move
-        # get a random index
+        # get a random index from the list of best moves
         index = random.randint(0, len(next_moves_list)-1)
+        
+        # best_move is a list that looks like:
+        # [index_to_play_to_get to that move, the_actual_board_of_next_move]
         best_move = next_moves_list[index]
 
-        ##
+        # decide if or not to choose randomly
+        pick = random.choice(self.rand_choice_lst)
+        
+        # AI chose without random
+        if pick == self.CERTAIN:
+            print("chose certainly")
+            
+            #####
+            # Your code goes here
+                    
+            ####
+            
+        else:
+            print("chose randomly")
+            
+
+        # add the next move that we are going to make to a list of all boards seen so far
+        # the game_boards current.
+        self.game_boards_current.append(best_move[1])
+       
+        # update the current board state with the value of
+        # new move chosen
+        self.backtrack(self.get_board_value(best_move[1]))
+        self.current_state = best_move[1]
+
+        # debug
+        print(show_board(best_move[1]))
+        print("val:{}\n".format(self.get_board_value(best_move[1])))
 
         # return the index of where to play the next move
         return best_move[0]
+
+    def backtrack(self,future_move_value):
+        if self.is_learning:
+            if self.current_state != None:
+                # the below line of code is key
+                # update the current board's state with the value
+                # of the future move.
+                
+                # What you might want to think about...
+                # the value of a board is kept in dictionary self.game_boards_memory[]
+                # the string of the board is used as a key to index that dictionary
+                # "future_move_value" is a numeric value of the future move 
+                # "current_state" is an array that represent the boards current state.
+                
+                #####
+                
+                # Your code goes here
+                pass
+                #####
+                
+            # optimizies training time
+            if self.self_save:
+                self.save()
                 
     def get_board_value(self, board):
         """
@@ -86,25 +149,32 @@ class AI:
         return value
 
     def has_lost(self):
-        pass
+        self.backtrack(0)
+        self.current_state = None
 
     def has_drawn(self):
-        pass
+        self.backtrack(0.5)
+        self.current_state = None
 
     def has_won(self):
-        pass
+        self.backtrack(1)
+        self.current_state = None
     
     def stop_learning(self):
-        pass
+        self.is_learning = False
+        print("Stopped learning")
         
     def start_learning(self):
-        pass
+        self.is_learning = True
+        print("Started learning")
     
     def stop_self_saving(self):
-        pass
+        self.self_save = False
+        print("Stopped self saving")
         
     def start_self_saving(self):
-        pass
+        self.self_save = True
+        print("Started self saving")
 
     def save(self):
         """
@@ -155,5 +225,92 @@ class AI:
         return s
 
 
+def generate_next(board):
+    """
+    Takes a board and returns a list of
+        all possible moves that can be made by the ai on that board.
+        It also includes the move needed to get to that board.
+        
+        The AI, see's its own moves on the board as 2's , other people's
+        moves on the board as 1's and no moves on the board as 0's.
+
+    board:  a list of 9 spaces that signals a game board.
+
+    :param board: list[]
+    :return: list[list[int(index of position to play), board]]
+
+    # test out code
+    >>> board = [0, 0, 0, 0, 1, 0, 0, 0, 0]
+    >>> next_moves_list = generate_next(board)
+    >>> for board in next_moves_list: print(str(board[0]) + "\\n" + show_board(board[1]))
+    0
+    200
+    010
+    000
+    <BLANKLINE>
+    1
+    020
+    010
+    000
+    <BLANKLINE>
+    2
+    002
+    010
+    000
+    <BLANKLINE>
+    3
+    000
+    210
+    000
+    <BLANKLINE>
+    5
+    000
+    012
+    000
+    <BLANKLINE>
+    6
+    000
+    010
+    200
+    <BLANKLINE>
+    7
+    000
+    010
+    020
+    <BLANKLINE>
+    8
+    000
+    010
+    002
+    <BLANKLINE>
+    """
+    
+    #######
+    
+    # your code goes here
+
+    ########
+    
+def show_board(board):
+    """
+    Takes a board and prints out it's status.
+
+    :param board: a list of length 9 that signifies a game board
+    :return: null
+
+    # test out the code.
+    >>> board = [0, 0, 0, 0, 1, 0, 0, 0, 0]
+    >>> show_board(board)
+    000
+    010
+    000
+    """
+    s = ""
+    # loop through the board
+    for i in range(9):
+        s += str(board[i])
+        if (((i+1) % 3) == 0) and (i != 0):
+            s += "\n"
+    return s
 
 
